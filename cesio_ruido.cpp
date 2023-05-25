@@ -74,6 +74,20 @@ void cesio_ruido() {
 
     }
 
+    std::ofstream outputFile("cesio_sem_ruido.txt");
+    if (!outputFile) {
+        std::cout << "Failed to open the output file." << std::endl;
+    }
+
+    for (size_t i = 0; i < sub.size(); ++i) {
+        outputFile << i << " " << sub[i] << std::endl;
+    }
+
+    outputFile.close();
+
+    std::cout << "File writing completed successfully." << std::endl;
+
+
     //Adding points to graph
     for (int i=0; i<xdata.size(); i++) {
         subtracao->Fill(xData[i], sub[i]);

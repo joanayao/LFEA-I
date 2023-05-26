@@ -33,7 +33,7 @@ void desco_ruido() {
     
     file.close();
 
-    std::ifstream files("desco2.txt");
+    std::ifstream files("desco1.txt");
     if (!files.is_open()) {
         std::cerr << "Error opening file: " << "COM.FONTE.txt" << std::endl;
         return;
@@ -74,7 +74,7 @@ void desco_ruido() {
 
     }
 
-    std::ofstream outputFile("desco2_sem_ruido.txt");
+    std::ofstream outputFile("desco1_sem_ruido.txt");
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }
@@ -126,7 +126,7 @@ void desco_ruido() {
     TFitResultPtr fitResult = histogram->Fit(fitFunc, "S");
     fitFunc->Draw("same");*/
 
-    C.SaveAs("desco_ruido.png");
+    C.SaveAs("desco1_ruido.png");
 
     C.Update();
     C.WaitPrimitive();

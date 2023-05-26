@@ -1,96 +1,98 @@
 
+// O ROOT vai usar esta função com os parâmetros em par para fazer o fit
+double predefinedGaussian(double *x, double *par) {
+        // par[0]: amplitude
+        // par[1]: mean
+        // par[2]: standard deviation
+        return par[0] * TMath::Gaus(x[0], par[1], par[2]);
+}
+
+
 void cesio_fit() {
 
     //INICIALIZACOES
     TApplication App("A", nullptr, nullptr);
     TCanvas C("C","",1200,800);
-    TH1F* histogram = new TH1F("histogram", "Uniformly Distributed Bins", 300, 0, 1023);
+    TH1D* histogram = new TH1D("histogram", "Uniformly Distributed Bins", 1024, 0, 1023);
     
     std::vector<double> xData;
     std::vector<double> yData;
 
-    //CALIBRACAO
-    double ordenada = 8.75;
-    double declive = 0.6703;
-
+    //Leitura do Ficheiro
     std::ifstream file("cesio_sem_ruido.txt");
     if (!file.is_open()) {
-        std::cerr << "Error opening file: " << "COM.FONTE.txt" << std::endl;
-        return;
+        std::cerr << "Error opening file: " << std::endl;
     }
     
+    //Conversão Bin - Energia
     std::string line;
     while (std::getline(file, line)) {
         double bin, cont, energy;
-        char comma;
         std::stringstream ss(line);
-        ss >> bin >> comma >> cont;
-        energy = (bin-ordenada)/declive;
-        xData.push_back(energy);
+        ss >> bin >> cont;
+        xData.push_back(bin);
+        if (cont < 0) {
+            yData.push_back(0);
+        }
+        else {
         yData.push_back(cont);
+        }
     }
-    
+   
     file.close();
 
+    //HISTOGRAM
 
-    /*//HISTOGRAM
     //Adding points to graph
     for (int i=0; i<xData.size(); i++) {
         histogram->Fill(xData[i], yData[i]);
     }
-    histogram->SetTitle("Amplitude dos Pulsos");
-        histogram->SetMarkerColor(kBlue-2);
-        histogram->GetXaxis()->SetTitle("Amplitude");
-        histogram->GetYaxis()->SetTitle("N de Contagens");
-        histogram->Draw("HIST");
-        */
 
-    //PLOT
-    TGraph* graph = new TGraph(xData.size(), xData.data(), yData.data());
-    graph->Draw("AP");
+    histogram->SetTitle("Pico de Absorcao Total");
+    histogram->SetMarkerColor(kBlue-2);
+    histogram->SetMarkerStyle(20);
+    histogram->GetXaxis()->SetTitle("Bin");
+    histogram->GetYaxis()->SetTitle("N de Contagens");
+    histogram->Draw("HIST");
+        
 
     //BINS DO PICO
     double min = 420;
     double max = 500;
-    double energia_min = (min-ordenada)/declive;
-    double energia_max = (max-ordenada)/declive;
-    graph->GetXaxis()->SetRangeUser(energia_min, energia_max);
+    histogram->GetXaxis()->SetRangeUser(min, max);
 
+    // Criamos uma instância "fitadora"
+    TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
 
+    // Parâmetros Iniciais Estimados
+    double amplitude = 300;
+    double mean = 458;
+    double stddev = 11.85;
 
-    //FIT
-    TF1 *gaussian = new TF1("gaussian", "gaus", energia_min, energia_max);
-    gaussian->SetParameters(0, 1, 1);
-    //histogram->Fit(gaussian);
-    
-    TFitResultPtr fitResult = graph->Fit(gaussian, "S");
+    // Vai dar os parâmtros à nossa função de fit
+    fitFunc->SetParameters(amplitude, mean, stddev);
 
-    /*// Check if the fit converged successfully
-    if (fitResult->IsValid()) {
-        // Retrieve the fitted parameter values
-        double fittedMean = gaussian->GetParameter(1);
-        double fittedSigma = gaussian->GetParameter(2);
-        double fittedAmplitude = gaussian->GetParameter(0);
+    // Fit em que se ignoram os bins sem nada
+    histogram->Fit(fitFunc, "W");
 
-        // Print the fitted parameter values
-        std::cout << "Fitted Mean: " << fittedMean << std::endl;
-        std::cout << "Fitted Sigma: " << fittedSigma << std::endl;
-        std::cout << "Fitted Amplitude: " << fittedAmplitude << std::endl;
-    } else {
-        std::cout << "Fit did not converge successfully!" << std::endl;
-    }
-    */
+    double fittedAmplitude = fitFunc->GetParameter(0);
+    double fittedMean = fitFunc->GetParameter(1);
+    double fittedStdDev = fitFunc->GetParameter(2);
 
+    //Parâmetros da Calibração
+    double ordenada = 8.754;
+    double declive = 0.6703;
 
+    double fittedMeanEnergy = (fittedMean-ordenada)/declive;
+    double fittedStdDevEnergy = fittedStdDev/declive;
 
+    cout << "Âmplitude: " << fittedAmplitude << endl;
+    cout << "Média: " << fittedMean << endl;
+    cout << "Média em Energia: " << fittedMeanEnergy << endl;
+    cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
 
-    
-
-    //TF1* fitFunc = new TF1("fitFunc", "gaus", 0, 10);
-    //TFitResultPtr fitResult = histogram->Fit(fitFunc, "S");
-    //fitFunc->Draw("same");
-    gaussian->Draw("same");
-    C.SaveAs("FIT_PICO.png");
+    fitFunc->Draw("same");
+    C.SaveAs("FIT_PICO_AB_TOTAL.png");
     C.Update();
     C.WaitPrimitive();
 

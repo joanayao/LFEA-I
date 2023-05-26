@@ -53,7 +53,7 @@ void cesio_fit() {
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens");
-    histogram->Draw("HIST");
+    histogram->Draw("hist");
         
 
     //BINS DO PICO

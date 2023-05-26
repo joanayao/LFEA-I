@@ -48,7 +48,7 @@ void cesio_fit() {
         histogram->Fill(xData[i], yData[i]);
     }
 
-    histogram->SetTitle("Pico de Absorcao Total");
+    histogram->SetTitle("Pico de Absorcao Total Cesio"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
@@ -56,7 +56,7 @@ void cesio_fit() {
     histogram->Draw("hist");
         
 
-    //BINS DO PICO
+    //BINS DO PICO -> MEXER AQUI
     double min = 420;
     double max = 500;
     histogram->GetXaxis()->SetRangeUser(min, max);
@@ -64,10 +64,10 @@ void cesio_fit() {
     // Criamos uma instância "fitadora"
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
 
-    // Parâmetros Iniciais Estimados
+    // Parâmetros Iniciais Estimados -> MEXER AQUI
     double amplitude = 300;
-    double mean = 458;
-    double stddev = 11.85;
+    double mean = 600;
+    double stddev = 17;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude, mean, stddev);
@@ -89,11 +89,44 @@ void cesio_fit() {
     cout << "Âmplitude: " << fittedAmplitude << endl;
     cout << "Média: " << fittedMean << endl;
     cout << "Média em Energia: " << fittedMeanEnergy << endl;
+    cout << "Desvio Padrão: " << fittedStdDev << endl;
     cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
 
+    int N_count_pico = 0;
+
+    for (int i = min; i <= max; i++) {
+        if (fittedMean - 3*fittedStdDev <= xData[i] <= fittedMean + 3*fittedStdDev) {
+            N_count_pico += yData[i];
+        }
+    }
+
+    cout << "Nº de contagens do Pico: " << N_count_pico << endl;
+
+
     fitFunc->Draw("same");
-    C.SaveAs("FIT_PICO_AB_TOTAL.png");
+    C.SaveAs("FIT_PICO_AB_TOTAL_CESIO.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
+
+    std::ofstream outputFile("Parâmetros_Pico_Absorção_Total_Césio.txt"); // -> MEXER AQUI
+    if (!outputFile) {
+        std::cout << "Failed to open the output file." << std::endl;
+    }
+
+    outputFile << "Âmplitude: " << fittedAmplitude << endl;
+    outputFile << "Média: " << fittedMean << endl;
+    outputFile << "Média em Energia: " << fittedMeanEnergy << endl;
+    outputFile << "Desvio Padrão: " << fittedStdDev << endl;
+    outputFile << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
+    outputFile << "Nº de contagens do Pico: " << N_count_pico << endl;
+
+    outputFile.close();
+
+    std::cout << "File writing completed successfully." << std::endl;
+
+  
 }
+
+
+

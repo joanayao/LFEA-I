@@ -39,6 +39,11 @@ void ruido_plot() {
     double max = 1024;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
+    // Definir os erros como Sqrt(N)
+    for(int i = min; i < yData.size(); i++){
+        histogram->SetBinError(i,sqrt(yData[i]));
+    }
+
     histogram->SetTitle("Radiacao Ambiente 20 min");
     histogram->SetMarkerColor(kBlue-2);
     histogram->GetXaxis()->SetTitle("Bin");

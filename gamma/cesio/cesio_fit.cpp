@@ -48,18 +48,23 @@ void cesio_fit() {
         histogram->Fill(xData[i], yData[i]);
     }
 
+    //histogram->SetBinErrorOption(TH1::kNormal);
     histogram->SetTitle("Pico de Absorcao Total Cesio"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
-    histogram->GetYaxis()->SetTitle("N de Contagens");
-    histogram->Draw("hist");
-        
+    histogram->GetYaxis()->SetTitle("N de Contagens"); 
 
     //BINS DO PICO -> MEXER AQUI
     double min = 420;
     double max = 500;
     histogram->GetXaxis()->SetRangeUser(min, max);
+
+    // Definir os erros como Sqrt(N)
+    for(int i = min; i <= max; i++)
+        histogram->SetBinError(i,sqrt(yData[i]));
+
+    histogram->Draw();
 
     // Criamos uma instância "fitadora"
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
@@ -73,7 +78,7 @@ void cesio_fit() {
     fitFunc->SetParameters(amplitude, mean, stddev);
 
     // Fit em que se ignoram os bins sem nada
-    histogram->Fit(fitFunc, "W");
+    histogram->Fit(fitFunc, "WE");
 
     double fittedAmplitude = fitFunc->GetParameter(0);
     double fittedMean = fitFunc->GetParameter(1);

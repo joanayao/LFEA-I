@@ -8,7 +8,7 @@ double predefinedGaussian(double *x, double *par) {
 }
 
 
-void cesio_fit() {
+void ruido_fit_potassio() {
 
     //INICIALIZACOES
     TApplication App("A", nullptr, nullptr);
@@ -19,7 +19,7 @@ void cesio_fit() {
     std::vector<double> yData;
 
     //Leitura do Ficheiro
-    std::ifstream file("cesio_sem_ruido.txt");
+    std::ifstream file("ruido20m.txt"); // -> Mexer Aqui
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << std::endl;
     }
@@ -27,9 +27,10 @@ void cesio_fit() {
     //Conversão Bin - Energia
     std::string line;
     while (std::getline(file, line)) {
-        double bin, cont, energy;
+        double bin, cont, trash;
+        char comma;
         std::stringstream ss(line);
-        ss >> bin >> cont;
+        ss >> bin >> comma >> cont >> comma >> trash;
         xData.push_back(bin);
         if (cont < 0) {
             yData.push_back(0);
@@ -48,16 +49,15 @@ void cesio_fit() {
         histogram->Fill(xData[i], yData[i]);
     }
 
-    //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Pico de Absorcao Total Cesio"); // -> MEXER AQUI
+    histogram->SetTitle("Pico Principal"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
-    histogram->GetYaxis()->SetTitle("N de Contagens"); 
+    histogram->GetYaxis()->SetTitle("N de Contagens");
 
-    //BINS DO PICO -> MEXER AQUI
-    double min = 420;
-    double max = 500;
+    // Bins do Pico -> MEXER AQUI
+    double min = 30;
+    double max = 70;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
     // Definir os erros como Sqrt(N)
@@ -70,32 +70,32 @@ void cesio_fit() {
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude = 300;
-    double mean = 600;
-    double stddev = 17;
+    double amplitude = 1100;
+    double mean = 74;
+    double stddev = 20;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude, mean, stddev);
 
     // Fit em que se ignoram os bins sem nada
-    histogram->Fit(fitFunc, "WE");
+    histogram->Fit(fitFunc, "W");
 
     double fittedAmplitude = fitFunc->GetParameter(0);
     double fittedMean = fitFunc->GetParameter(1);
     double fittedStdDev = fitFunc->GetParameter(2);
 
     //Parâmetros da Calibração
-    double ordenada = 8.754;
-    double declive = 0.6703;
+    double ordenada = 9.1;
+    double declive = 0.6725;
 
     double fittedMeanEnergy = (fittedMean-ordenada)/declive;
     double fittedStdDevEnergy = fittedStdDev/declive;
 
-    cout << "Âmplitude: " << fittedAmplitude << endl;
-    cout << "Média: " << fittedMean << endl;
-    cout << "Média em Energia: " << fittedMeanEnergy << endl;
-    cout << "Desvio Padrão: " << fittedStdDev << endl;
-    cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
+    cout << "Âmplitude: " << fittedAmplitude << " Contagens" << endl;
+    cout << "Média: " << fittedMean << " Bin" << endl;
+    cout << "Média em Energia: " << fittedMeanEnergy << " keV" << endl;
+    cout << "Desvio Padrão: " << fittedStdDev << " Bin" << endl;
+    cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << " keV" << endl;
 
     int N_count_pico = 0;
 
@@ -105,26 +105,26 @@ void cesio_fit() {
         }
     }
 
-    cout << "Nº de contagens do Pico: " << N_count_pico << endl;
+    cout << "Nº de contagens do Pico: " << N_count_pico << " Contagens" << endl;
 
 
     fitFunc->Draw("same");
-    C.SaveAs("FIT_PICO_AB_TOTAL_CESIO.png"); // -> MEXER AQUI
+    C.SaveAs("FIT_PICO_Principal.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_Pico_Absorção_Total_Césio.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_Pico_Principal.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }
 
-    outputFile << "Âmplitude: " << fittedAmplitude << endl;
-    outputFile << "Média: " << fittedMean << endl;
-    outputFile << "Média em Energia: " << fittedMeanEnergy << endl;
-    outputFile << "Desvio Padrão: " << fittedStdDev << endl;
-    outputFile << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
-    outputFile << "Nº de contagens do Pico: " << N_count_pico << endl;
+    outputFile << "Âmplitude: " << fittedAmplitude << " Contagens" << endl;
+    outputFile << "Média: " << fittedMean << " Bin" << endl;
+    outputFile << "Média em Energia: " << fittedMeanEnergy << " keV" << endl;
+    outputFile << "Desvio Padrão: " << fittedStdDev << " Bin" << endl;
+    outputFile << "Desvio Padrão em Energia: " << fittedStdDevEnergy << " keV" << endl;
+    outputFile << "Nº de contagens do Pico: " << N_count_pico << " Contagens" << endl;
 
     outputFile.close();
 

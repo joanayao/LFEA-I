@@ -53,13 +53,18 @@ void cu_fit() {
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens");
-    histogram->Draw("hist");
         
 
     //BINS DO PICO -> MEXER AQUI
     double min = 850;
     double max = 950;
     histogram->GetXaxis()->SetRangeUser(min, max);
+
+    // Definir os erros como Sqrt(N)
+    for(int i = min; i <= max; i++)
+        histogram->SetBinError(i,sqrt(yData[i]));
+
+    histogram->Draw();
 
     // Criamos uma instância "fitadora"
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);

@@ -1,4 +1,3 @@
-
 // O ROOT vai usar esta função com os parâmetros em par para fazer o fit
 double predefinedGaussian(double *x, double *par) {
         // par[0]: amplitude
@@ -8,7 +7,7 @@ double predefinedGaussian(double *x, double *par) {
 }
 
 
-void cesio_fit() {
+void desco1_taxacontagem() {
 
     //INICIALIZACOES
     TApplication App("A", nullptr, nullptr);
@@ -19,10 +18,12 @@ void cesio_fit() {
     std::vector<double> yData;
 
     //Leitura do Ficheiro
-    std::ifstream file("cesio_sem_ruido.txt");
+    std::ifstream file("desco2_sem_ruido.txt");
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << std::endl;
     }
+
+    double tempo = 456;
     
     //Conversão Bin - Energia
     std::string line;
@@ -35,7 +36,7 @@ void cesio_fit() {
             yData.push_back(0);
         }
         else {
-        yData.push_back(cont);
+        yData.push_back(cont/tempo);
         }
     }
    
@@ -48,56 +49,74 @@ void cesio_fit() {
         histogram->Fill(xData[i], yData[i]);
     }
 
-    //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Pico de Absorcao Total Cesio"); // -> MEXER AQUI
+    histogram->SetTitle("Fonte desconhecida mais longe");
     histogram->SetMarkerColor(kBlue-2);
-    histogram->SetMarkerStyle(20);
+    //histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
-    histogram->GetYaxis()->SetTitle("N de Contagens"); 
+    histogram->GetYaxis()->SetTitle("N de Contagens por segundo");
+       
 
-    //BINS DO PICO -> MEXER AQUI
-    double min = 420;
-    double max = 500;
+    //BINS DO PICO
+    double min = 0;
+    double max = 400;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
     // Definir os erros como Sqrt(N)
     for(int i = min; i <= max; i++)
-        histogram->SetBinError(i,sqrt(yData[i]));
+        histogram->SetBinError(i,sqrt(yData[i]*tempo)/tempo);
 
     histogram->Draw();
 
-    // Criamos uma instância "fitadora"
-    TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
+    C.SetLogy();
+    C.Update();
+    C.SaveAs("DESCO2_plot.png");
+    C.WaitPrimitive();
 
-    // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude = 300;
-    double mean = 600;
-    double stddev = 17;
+    /*double roi=0;
+    for (int i=0; i<(max-min); i++) {
+        roi+=yData[min+i];
+    }
+ 
+    // Criamos uma instância "fitadora"
+    /*TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
+
+    // Parâmetros Iniciais Estimados
+    /*PICO 4 bins234-286
+    double amplitude = 1443;
+    double mean = 252;
+    double stddev = 8.2;
+    */
+
+    /*//PICO3 BINS 205-230
+    double amplitude = 596;
+    double mean = 209.7;
+    double stddev = 11.12;
+    */
+    
+
+    /*//PICO2 bins 60 a 73
+    double amplitude = 5485;
+    double mean = 66.48;
+    double stddev = 2.1;
+    */
+
+    /*//PICO1  bin 23-37 
+    double amplitude = 24818;
+    double mean = 29;
+    double stddev = 1.5;
+    */
 
     // Vai dar os parâmtros à nossa função de fit
-    fitFunc->SetParameters(amplitude, mean, stddev);
+    /*fitFunc->SetParameters(amplitude, mean, stddev);
 
     // Fit em que se ignoram os bins sem nada
-    histogram->Fit(fitFunc, "WE");
+    histogram->Fit(fitFunc, "W");
 
     double fittedAmplitude = fitFunc->GetParameter(0);
     double fittedMean = fitFunc->GetParameter(1);
     double fittedStdDev = fitFunc->GetParameter(2);
 
-    //Parâmetros da Calibração
-    double ordenada = 8.754;
-    double declive = 0.6703;
-
-    double fittedMeanEnergy = (fittedMean-ordenada)/declive;
-    double fittedStdDevEnergy = fittedStdDev/declive;
-
-    cout << "Âmplitude: " << fittedAmplitude << endl;
-    cout << "Média: " << fittedMean << endl;
-    cout << "Média em Energia: " << fittedMeanEnergy << endl;
-    cout << "Desvio Padrão: " << fittedStdDev << endl;
-    cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
-
-    int N_count_pico = 0;
+int N_count_pico = 0;
 
     for (int i = min; i <= max; i++) {
         if (fittedMean - 3*fittedStdDev <= xData[i] <= fittedMean + 3*fittedStdDev) {
@@ -106,15 +125,27 @@ void cesio_fit() {
     }
 
     cout << "Nº de contagens do Pico: " << N_count_pico << endl;
+    //Parâmetros da Calibração
+    double ordenada = 8.754;
+    double declive = 0.6703;
 
+    double fittedMeanEnergy = (fittedMean-ordenada)/declive;
+    double fittedStdDevEnergy = fittedStdDev/declive;
+
+    cout << "Amplitude: " << fittedAmplitude << endl;
+    cout << "Média: " << fittedMean << endl;
+    cout << "Desvio padrão: " << fittedStdDev << endl;
+    cout << "ROI: " << roi << endl;
+    cout << "Média em Energia: " << fittedMeanEnergy << endl;
+    cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
+    cout << "Nº de contagens do Pico: " << N_count_pico << endl;
 
     fitFunc->Draw("same");
-    C.SaveAs("FIT_PICO_AB_TOTAL_CESIO.png"); // -> MEXER AQUI
+    C.SaveAs("DESCO1_PICO4_FIT.png");
     C.Update();
     C.WaitPrimitive();
 
-
-    std::ofstream outputFile("Parâmetros_Pico_Absorção_Total_Césio.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_Pico4_Absorção_Desco1.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }
@@ -128,10 +159,7 @@ void cesio_fit() {
 
     outputFile.close();
 
-    std::cout << "File writing completed successfully." << std::endl;
+    std::cout << "File writing completed successfully." << std::endl;*/
 
   
 }
-
-
-

@@ -1,0 +1,6 @@
+Âmplitude: 21.1981 Contagens
+Média: 984.525 Bin
+Média em Energia: 1450.45 keV
+Desvio Padrão: 23.7755 Bin
+Desvio Padrão em Energia: 35.3539 keV
+Nº de contagens do Pico: 1112 Contagens

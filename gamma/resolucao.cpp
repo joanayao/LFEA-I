@@ -16,11 +16,12 @@ Double_t fitFunction(Double_t* x, Double_t* par) {
 
 void fitData() {
     // Step 1: Set up your data points
-    Double_t x[] = {662, 32, 1173, 1333, 607.7, 605.7, 606.1, 30.6, 85.9, 306.9, 362.6};
-    Double_t y[] = {0.06245, 0.2271, 0.05270, 0.04685, 0.05997, 0.06118, 0.06232, 0.1862, 0.0983, 0.1033, 0.09544};
-    Double_t ex[] = {0, 0, 0, 0, 0.2, 0.3, 0.3, 0.1, 0.1, 0.1, 0.1};
-    Double_t ey[] = {0.00001, 0.0001, 0.00001, 0.00001, 0.00004, 0.00004, 0.00004, 0.0004, 0.0001, 0.0001, 0.00006};
-    Int_t nPoints = 11;
+    //Falta aqui um dos pontos, o de 80 keV
+    Double_t x[] = {662, 32, 1173, 1333, 607.7, 605.7, 606.1, 30.6, 306.9, 361.9, 54.7, 67.9, 122.0};
+    Double_t y[] = {0.06245, 0.2271, 0.05270, 0.04685, 0.05997, 0.06118, 0.06232, 0.1862, 0.1033, 0.08653, 0.25635, 0.21933, 0.13840};
+    Double_t ex[] = {0, 0, 0, 0, 0.2, 0.3, 0.3, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.4};
+    Double_t ey[] = {0.00001, 0.0001, 0.00001, 0.00001, 0.00004, 0.00004, 0.00004, 0.0058,  0.0001, 0.00005, 0.00044, 0.00032, 0.00016};
+    Int_t nPoints = 13;
 
     // Step 2: Create a ROOT graph
     TGraphErrors* graph = new TGraphErrors(nPoints, x, y, ex, ey);
@@ -30,8 +31,8 @@ void fitData() {
 
     // Step 4: Set initial parameter values
     fitFunc->SetParameter(0, 1.145); // Initial value for par[0]
-    fitFunc->SetParameter(1, 1.34); // Initial value for par[1]
-    fitFunc->SetParameter(2, -0.01756); // Initial value for par[2]
+    fitFunc->SetParameter(1, -1.03); // Initial value for par[1]
+    fitFunc->SetParameter(2, 0.01756); // Initial value for par[2]
 
     // Step 5: Perform the fit
     graph->Fit(fitFunc, "QSE");
@@ -54,7 +55,6 @@ void fitData() {
 
     graph -> SetTitle("Energy Resolution;Energy;Resolution"); //Title, X title, Y title
     graph->Draw("AP");
-    canvas -> SetLogy();
     canvas->SaveAs("resolucao.png");
     
     // Display the fit parameters

@@ -11,7 +11,7 @@ void Hist_Lab0_LFEA() {
 
     std::ifstream file("cesio_sem_ruido.txt");
     if (!file.is_open()) {
-        std::cerr << "Error opening file: " << "COM.FONTE.txt" << std::endl;
+        std::cerr << "Error opening file: " << std::endl;
         return;
     }
     
@@ -33,28 +33,6 @@ void Hist_Lab0_LFEA() {
         histogram->Fill(xData[i], yData[i]);
 
     }
-
-
-    
-    //find maxima - hopefully picos gaussiana
-    for (int bin = 0; bin < 1022; ++bin) {
-        std::vector<double> maxima;
-        double value = yData[bin];
-        double prevValue1 = histogram->GetBinContent(bin - 1);
-        double prevValue2 = histogram->GetBinContent(bin - 2);
-        double nextValue1 = histogram->GetBinContent(bin + 1);
-        double nextValue2 = histogram->GetBinContent(bin + 2);
-
-        // Check if the bin value is higher than the two previous and two next bins
-        if (value > prevValue1 && value > prevValue2 && value > nextValue1 && value > nextValue2) {
-            maxima.push_back(yData[bin]);
-        }
-    }
-
-    for (int i=0; i<maxima.size(); ++i) {
-        cout << maxima[i] << endl;
-    }
-
 
     //PICO ABSORCAO TOTAL
 

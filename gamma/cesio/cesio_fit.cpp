@@ -49,15 +49,15 @@ void cesio_fit() {
     }
 
     //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Pico de Absorcao Total Cesio"); // -> MEXER AQUI
+    histogram->SetTitle("Pico de Raios X Cesio"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens"); 
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 420;
-    double max = 500;
+    double min = 20;
+    double max = 40;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
     // Definir os erros como Sqrt(N)
@@ -70,9 +70,9 @@ void cesio_fit() {
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude = 300;
-    double mean = 600;
-    double stddev = 17;
+    double amplitude = 700;
+    double mean = 31;
+    double stddev = 10;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude, mean, stddev);
@@ -109,12 +109,12 @@ void cesio_fit() {
 
 
     fitFunc->Draw("same");
-    C.SaveAs("FIT_PICO_AB_TOTAL_CESIO.png"); // -> MEXER AQUI
+    C.SaveAs("FIT_PICO_RAIOS_X_CESIO.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_Pico_Absorção_Total_Césio.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_Pico_Raios_X_Césio.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }

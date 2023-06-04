@@ -1,0 +1,4 @@
+Âmplitude: 7515.6 Contagens
+Média: 702.124 Bin
+Desvio Padrão: 1.85196 Bin
+Nº de contagens do Pico: 35414 Contagens

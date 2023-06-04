@@ -1,6 +1,6 @@
-Âmplitude: 293.313
+Âmplitude: 293.337
 Média: 458.443
-Média em Energia: 670.878
-Desvio Padrão: 11.8292
-Desvio Padrão em Energia: 17.6477
+Média em Energia: 670.877
+Desvio Padrão: 11.827
+Desvio Padrão em Energia: 17.6443
 Nº de contagens do Pico: 8723

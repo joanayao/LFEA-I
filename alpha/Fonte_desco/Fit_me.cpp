@@ -101,12 +101,22 @@ void Fit_me() {
     double fittedAmplitude_1 = fitFunc->GetParameter(0);
     double fittedMean_1 = fitFunc->GetParameter(1);
     double fittedStdDev_1 = fitFunc->GetParameter(2);
-    double fittedAmplitude_2 = fitFunc->GetParameter(4);
+    double fittedAmplitude_2 = fitFunc->GetParameter(3);
     double fittedMean_2 = fitFunc->GetParameter(4);
     double fittedStdDev_2 = fitFunc->GetParameter(5);
     double fittedAmplitude_3 = fitFunc->GetParameter(6);
     double fittedMean_3 = fitFunc->GetParameter(7);
     double fittedStdDev_3 = fitFunc->GetParameter(8);
+
+    double fittedAmplitude_1_E = fitFunc->GetParError(0);
+    double fittedMean_1_E = fitFunc->GetParError(1);
+    double fittedStdDev_1_E = fitFunc->GetParError(2);
+    double fittedAmplitude_2_E = fitFunc->GetParError(3);
+    double fittedMean_2_E = fitFunc->GetParError(4);
+    double fittedStdDev_2_E = fitFunc->GetParError(5);
+    double fittedAmplitude_3_E = fitFunc->GetParError(6);
+    double fittedMean_3_E = fitFunc->GetParError(7);
+    double fittedStdDev_3_E = fitFunc->GetParError(8);
 
     //Parâmetros da Calibração
     double ordenada = 3.71;
@@ -119,20 +129,20 @@ void Fit_me() {
     double fittedMeanEnergy_3 = fittedMean_3*declive+ordenada;
     double fittedStdDevEnergy_3 = fittedStdDev_3*declive;
 
-    cout << "Âmplitude 1: " << fittedAmplitude_1 << endl;
-    cout << "Média 1: " << fittedMean_1 << endl;
+    cout << "Âmplitude 1: " << fittedAmplitude_1 << " +- " << fittedAmplitude_1_E << endl;
+    cout << "Média 1: " << fittedMean_1 << " +- " << fittedMean_1_E << endl;
     cout << "Média em Energia 1: " << fittedMeanEnergy_1 << endl;
-    cout << "Desvio Padrão 1: " << fittedStdDev_1 << endl;
+    cout << "Desvio Padrão 1: " << fittedStdDev_1 << " +- " << fittedStdDev_1_E << endl;
     cout << "Desvio Padrão em Energia 1: " << fittedStdDevEnergy_1 << endl;
-    cout << "Âmplitude 2: " << fittedAmplitude_2 << endl;
-    cout << "Média 2: " << fittedMean_2 << endl;
+    cout << "Âmplitude 2: " << fittedAmplitude_2 << " +- " << fittedAmplitude_2_E << endl;
+    cout << "Média 2: " << fittedMean_2 << " +- " << fittedMean_2_E << endl;
     cout << "Média em Energia 2: " << fittedMeanEnergy_2 << endl;
-    cout << "Desvio Padrão 2: " << fittedStdDev_2 << endl;
+    cout << "Desvio Padrão 2: " << fittedStdDev_2 << " +- " << fittedStdDev_2_E << endl;
     cout << "Desvio Padrão em Energia 2: " << fittedStdDevEnergy_2 << endl;
-    cout << "Âmplitude 3: " << fittedAmplitude_3 << endl;
-    cout << "Média 3: " << fittedMean_3 << endl;
+    cout << "Âmplitude 3: " << fittedAmplitude_3 << " +- " << fittedAmplitude_3_E << endl;
+    cout << "Média 3: " << fittedMean_3 << " +- " << fittedMean_3_E << endl;
     cout << "Média em Energia 3: " << fittedMeanEnergy_3 << endl;
-    cout << "Desvio Padrão 3: " << fittedStdDev_3 << endl;
+    cout << "Desvio Padrão 3: " << fittedStdDev_3 << " +- " << fittedStdDev_3_E << endl;
     cout << "Desvio Padrão em Energia 3: " << fittedStdDevEnergy_3 << endl;
 
     int N_count_pico_1 = 0;
@@ -174,26 +184,30 @@ void Fit_me() {
         std::cout << "Failed to open the output file." << std::endl;
     }
 
-    outputFile << "Âmplitude 1: " << fittedAmplitude_1 << endl;
-    outputFile << "Média 1: " << fittedMean_1 << endl;
+    outputFile << "Âmplitude 1: " << fittedAmplitude_1 << " +- " << fittedAmplitude_1_E << endl;
+    outputFile << "Média 1: " << fittedMean_1 << " +- " << fittedMean_1_E << endl;
     outputFile << "Média em Energia 1: " << fittedMeanEnergy_1 << endl;
-    outputFile << "Desvio Padrão 1: " << fittedStdDev_1 << endl;
+    outputFile << "Desvio Padrão 1: " << fittedStdDev_1 << " +- " << fittedStdDev_1_E << endl;
     outputFile << "Desvio Padrão em Energia 1: " << fittedStdDevEnergy_1 << endl;
     outputFile << "Nº de contagens do Pico 1: " << N_count_pico_1 << endl;
 
-    outputFile << "Âmplitude 2: " << fittedAmplitude_2 << endl;
-    outputFile << "Média 2: " << fittedMean_2 << endl;
+    outputFile << "Âmplitude 2: " << fittedAmplitude_2 << " +- " << fittedAmplitude_2_E << endl;
+    outputFile << "Média 2: " << fittedMean_2 << " +- " << fittedMean_2_E << endl;
     outputFile << "Média em Energia 2: " << fittedMeanEnergy_2 << endl;
-    outputFile << "Desvio Padrão 2: " << fittedStdDev_2 << endl;
+    outputFile << "Desvio Padrão 2: " << fittedStdDev_2 << " +- " << fittedStdDev_2_E << endl;
     outputFile << "Desvio Padrão em Energia 2: " << fittedStdDevEnergy_2 << endl;
     outputFile << "Nº de contagens do Pico 2: " << N_count_pico_2 << endl;
 
-    outputFile << "Âmplitude 3: " << fittedAmplitude_3 << endl;
-    outputFile << "Média 3: " << fittedMean_3 << endl;
+    outputFile << "Âmplitude 3: " << fittedAmplitude_3 << " +- " << fittedAmplitude_3_E << endl;
+    outputFile << "Média 3: " << fittedMean_3 << " +- " << fittedMean_3_E << endl;
     outputFile << "Média em Energia 3: " << fittedMeanEnergy_3 << endl;
-    outputFile << "Desvio Padrão 3: " << fittedStdDev_3 << endl;
+    outputFile << "Desvio Padrão 3: " << fittedStdDev_3 << " +- " << fittedStdDev_3_E << endl;
     outputFile << "Desvio Padrão em Energia 3: " << fittedStdDevEnergy_3 << endl;
     outputFile << "Nº de contagens do Pico 3: " << N_count_pico_3 << endl;
+
+    double chi2 = fitFunc->GetChisquare();
+    int ndf = fitFunc->GetNDF();
+    outputFile << "Chi^2/ndf: " << chi2/ndf << endl;
 
     outputFile.close();
 

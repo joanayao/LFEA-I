@@ -14,9 +14,8 @@ void fit() {
     Double_t x[] = {677.02,496.17,1011.69,775.42,223.51,23.98,101.22};
     Double_t y[] = {5.48556,5.02,6.39,5.76,4.29,3.77,3.98};
     Double_t ex[] = {0.05,0.12,0.14,0.14,0.13,0.15,0.15};
-    Double_t ey[] = {0,0.07,0.08,0.08,0.06,0.06,0.06};
+    Double_t ey[] = {0,0.04,0.05,0.04,0.04,0.04,0.04};
     Int_t nPoints = 7;
-    double npars=2;
 
     // Step 2: Create a ROOT graph
     TGraphErrors* graph = new TGraphErrors(nPoints, x, y, ex, ey);
@@ -50,7 +49,7 @@ void fit() {
 
     graph -> SetTitle("Calibracao;Bins;Energy(MeV)"); //Title, X title, Y title
     graph->Draw("AP");
-    canvas->SaveAs("calibracao1_nova_am.png");
+    canvas->SaveAs("calibracao_am.png");
     
     // Display the fit parameters
     std::cout << "Fit Parameters:" << std::endl;
@@ -61,9 +60,6 @@ void fit() {
 
     // Display the chi-square value
     std::cout <<   "Chi-square: " << chi2 << std::endl;
-    std::cout << "numero parametros : " << fitFunc->GetNpar() << std::endl;
-    std::cout << "chi/ndf : " << chi2/(nPoints-fitFunc->GetNpar()) << std::endl;
     std::cout << "teste" << graph->GetErrorX(0) << std::endl;
-
 }
 

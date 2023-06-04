@@ -76,21 +76,22 @@ void Fit_me_2() {
     for(int i = min; i <= max; i++)
         histogram->SetBinError(i,sqrt(yData[i]));
 
+    histogram->SetStats(0);
     histogram->Draw();
 
     // Criamos uma instância "fitadora"
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 9);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude_1 = 7500;
+    double amplitude_1 = 7107;
     double mean_1 = 702;
-    double stddev_1 = 2.12;
-    double amplitude_2 = 1500;
-    double mean_2 = 690.5;
-    double stddev_2 = 1;
-    double amplitude_3 = 200;
-    double mean_3 = 670;
-    double stddev_3 = 7;
+    double stddev_1 = 1.5;
+    double amplitude_2 = 1171;
+    double mean_2 = 697;
+    double stddev_2 = 2;
+    double amplitude_3 = 505;
+    double mean_3 = 699;
+    double stddev_3 = 6.7;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude_1, mean_1, stddev_1, amplitude_2, mean_2, stddev_2, amplitude_3, mean_3, stddev_3);
@@ -120,7 +121,7 @@ void Fit_me_2() {
 
 
     //Parâmetros da Calibração
-    double ordenada = 0.006;
+    double ordenada = 0.06;
     double declive = 0.0077;
 
     double fittedMeanEnergy_1 = fittedMean_1*declive+ordenada;
@@ -174,12 +175,12 @@ void Fit_me_2() {
 
 
     fitFunc->Draw("same");
-    C.SaveAs("FIT_3_Picos_Am_Ar.png"); // -> MEXER AQUI
+    C.SaveAs("FIT_3_Picos_Am_Vac.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_3_Picos_Am_Ar.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_3_Picos_Am_Vac.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }

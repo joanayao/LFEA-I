@@ -1,19 +1,19 @@
-Âmplitude 1: 7106.28 +- 78.7243
-Média 1: 702.187 +- 0.0207237
-Média em Energia 1: 5.41284
-Desvio Padrão 1: 1.50802 +- 0.0194203
-Desvio Padrão em Energia 1: 0.0116117
-Nº de contagens do Pico 1: 19973
-Âmplitude 2: 1169.51 +- 79.8754
-Média 2: 697.653 +- 0.164307
-Média em Energia 2: 5.37792
-Desvio Padrão 2: 2.00942 +- 0.143028
-Desvio Padrão em Energia 2: 0.0154726
-Nº de contagens do Pico 2: 6625
-Âmplitude 3: 507.586 +- 85.2269
-Média 3: 699.033 +- 0.389574
-Média em Energia 3: 5.38855
-Desvio Padrão 3: 6.7532 +- 0.568033
-Desvio Padrão em Energia 3: 0.0519996
-Nº de contagens do Pico 3: 37903
-Chi^2/ndf: 2418.65
+Âmplitude 1: 1017.5 +- 112.614
+Média 1: 591.383 +- 73.5849
+Média em Energia 1: 4.61365
+Desvio Padrão 1: 7.1782 +- 31.4095
+Desvio Padrão em Energia 1: 0.0552721
+Nº de contagens do Pico 1: 17396
+Âmplitude 2: 564.272 +- 96.7526
+Média 2: 581.085 +- 75.8051
+Média em Energia 2: 4.53436
+Desvio Padrão 2: 11.1598 +- 72.1517
+Desvio Padrão em Energia 2: 0.0859307
+Nº de contagens do Pico 2: 0
+Âmplitude 3: 1.63089 +- 76.4083
+Média 3: 613.741 +- 24.2869
+Média em Energia 3: 4.7858
+Desvio Padrão 3: 2.05541 +- 70.7554
+Desvio Padrão em Energia 3: 0.0158267
+Nº de contagens do Pico 3: 84
+Chi^2/ndf: 431.024

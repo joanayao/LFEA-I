@@ -27,7 +27,7 @@ void Fit_me_2() {
     std::vector<double> yData;
 
     //Leitura do Ficheiro
-    std::ifstream file("amvac60s.txt"); // -> Mexer Aqui
+    std::ifstream file("amar60s.txt"); // -> Mexer Aqui
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << std::endl;
     }
@@ -61,15 +61,15 @@ void Fit_me_2() {
     }
 
     //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Americio + Vacuo - Fit 3 Gaussianas"); // -> MEXER AQUI
+    histogram->SetTitle("Americio + Ar - Fit 3 Gaussianas"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens"); 
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 680;
-    double max = 720;
+    double min = 530;
+    double max = 630;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
     // Definir os erros como Sqrt(N)
@@ -83,18 +83,24 @@ void Fit_me_2() {
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 9);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude_1 = 7107;
-    double mean_1 = 702;
-    double stddev_1 = 1.5;
-    double amplitude_2 = 1171;
-    double mean_2 = 697;
-    double stddev_2 = 2;
-    double amplitude_3 = 505;
-    double mean_3 = 699;
-    double stddev_3 = 6.7;
+    double amplitude_1 = 850;
+    double mean_1 = 592;
+    double stddev_1 = 6.7;
+    double amplitude_2 = 646;
+    double mean_2 = 584;
+    double stddev_2 = 9.8;
+    double amplitude_3 = 109;
+    double mean_3 = 574;
+    double stddev_3 = 14;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude_1, mean_1, stddev_1, amplitude_2, mean_2, stddev_2, amplitude_3, mean_3, stddev_3);
+    //fitFunc->FixParameter(4, 584);
+    //fitFunc->FixParameter(5, 7);
+    //fitFunc->FixParameter(7, 574);
+
+
+
 
     // Fit
     histogram->Fit(fitFunc, "WE");
@@ -175,12 +181,12 @@ void Fit_me_2() {
 
 
     fitFunc->Draw("same");
-    C.SaveAs("FIT_3_Picos_Am_Vac.png"); // -> MEXER AQUI
+    C.SaveAs("FIT_3_Picos_Am_Ar.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_3_Picos_Am_Vac.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_3_Picos_Am_Ar.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }

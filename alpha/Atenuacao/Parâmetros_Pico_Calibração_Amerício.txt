@@ -1,4 +1,6 @@
-Âmplitude: 7515.6 Contagens
-Média: 702.124 Bin
-Desvio Padrão: 1.85196 Bin
-Nº de contagens do Pico: 35414 Contagens
+Âmplitude: 7515.6
+Média: 702.124
+Média em Energia: 1034.42
+Desvio Padrão: 1.85196
+Desvio Padrão em Energia: 2.76289
+Nº de contagens do Pico: 35414

@@ -1,0 +1,4 @@
+Âmplitude: 499.788
+Média: 243.987
+Desvio Padrão: -0.64932
+Nº de contagens do Pico: 813

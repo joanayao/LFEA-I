@@ -14,7 +14,7 @@ void fit() {
     Double_t x[] = {677.02,496.17,1011.69,775.42,223.51,23.98,101.22};
     Double_t y[] = {5.48556,5.02,6.39,5.76,4.29,3.77,3.98};
     Double_t ex[] = {0.05,0.12,0.14,0.14,0.13,0.15,0.15};
-    Double_t ey[] = {0,0.07,0.08,0.08,0.06,0.06,0.06};
+    Double_t ey[] = {0,0.05,0.06,0.06,0.05,0.04,0.04};
     Int_t nPoints = 7;
     double npars=2;
 
@@ -46,8 +46,9 @@ void fit() {
     
     graph->SetMarkerStyle(kOpenCircle);
     graph->SetMarkerSize(0.2);
-    //Changing the titles and drawing
 
+    //Changing the titles and drawing
+    graph -> GetYaxis() -> SetRangeUser(0,6.8);
     graph -> SetTitle("Calibracao;Bins;Energy(MeV)"); //Title, X title, Y title
     graph->Draw("AP");
     canvas->SaveAs("calibracao1_nova_am.png");

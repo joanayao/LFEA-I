@@ -8,15 +8,14 @@ Double_t fitFunction(Double_t* x, Double_t* par) {
     return par[0]*x[0]+par[1];
 }
 
-void fit() {
+void calibracao() {
     // Step 1: Set up your data points
     //Falta aqui um dos pontos, o de 80 keV
-    Double_t x[] = {677.02,496.17,1011.69,775.42,223.51,23.98,101.22};
-    Double_t y[] = {5.48556,5.02,6.39,5.76,4.29,3.77,3.98};
-    Double_t ex[] = {0.05,0.12,0.14,0.14,0.13,0.15,0.15};
-    Double_t ey[] = {0,0.05,0.06,0.06,0.05,0.04,0.04};
-    Int_t nPoints = 7;
-    double npars=2;
+    Double_t x[] = {113.02,243.51,44.18,446.99,328.01,658.48,547.90,875.50,175.57};
+    Double_t y[] = {662,1400,255,2546,1910,3819,3183,5092,1018};
+    Double_t ex[] = {0.023,0.023,0.039,0.295,0.023,0.023,0.023,0.022,0.024};
+    Double_t ey[] = {25,40,18,62,49,86,74,111,32};
+    Int_t nPoints = 9;
 
     // Step 2: Create a ROOT graph
     TGraphErrors* graph = new TGraphErrors(nPoints, x, y, ex, ey);
@@ -34,6 +33,7 @@ void fit() {
 
     // Step 6: Access the fit results
     Double_t chi2 = fitFunc->GetChisquare();
+    double ndf = fitFunc->GetNDF();
 
     // Perform any additional analysis or output the results as needed
     // Save the graph as a PNG file
@@ -46,12 +46,11 @@ void fit() {
     
     graph->SetMarkerStyle(kOpenCircle);
     graph->SetMarkerSize(0.2);
-
     //Changing the titles and drawing
-    graph -> GetYaxis() -> SetRangeUser(0,6.8);
+
     graph -> SetTitle("Calibracao;Bins;Energy(MeV)"); //Title, X title, Y title
     graph->Draw("AP");
-    canvas->SaveAs("calibracao1_nova_am.png");
+    canvas->SaveAs("calibracao_am.png");
     
     // Display the fit parameters
     std::cout << "Fit Parameters:" << std::endl;
@@ -62,9 +61,8 @@ void fit() {
 
     // Display the chi-square value
     std::cout <<   "Chi-square: " << chi2 << std::endl;
-    std::cout << "numero parametros : " << fitFunc->GetNpar() << std::endl;
-    std::cout << "chi/ndf : " << chi2/(nPoints-fitFunc->GetNpar()) << std::endl;
-    std::cout << "teste" << graph->GetErrorX(0) << std::endl;
-
+    std::cout <<   "NDF: " << ndf << std::endl;
+    std::cout <<   "chi/NDF: " << chi2/ndf << std::endl;
+    
 }
 

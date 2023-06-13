@@ -18,7 +18,7 @@ void pico_fit() {
     std::vector<double> xData;
     std::vector<double> yData;
 
-    std::ifstream file("pulser2.txt");
+    std::ifstream file("pulser1.txt");
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << "RUIDO.CESIO.txt" << std::endl;
         return;
@@ -50,8 +50,8 @@ void pico_fit() {
         
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 242;
-    double max = 245;
+    double min = 111;
+    double max = 115;
     histogram->GetXaxis()->SetRangeUser(min, max+1);
 
     // Definir os erros como Sqrt(N)
@@ -66,8 +66,8 @@ void pico_fit() {
     fitFunc->SetRange(min, max);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude = 350;
-    double mean = 344;
+    double amplitude = 496;
+    double mean = 113;
     double stddev = 4;
 
     // Vai dar os parâmtros à nossa função de fit
@@ -76,14 +76,17 @@ void pico_fit() {
     // Fit em que se ignoram os bins sem nada
     histogram->Fit(fitFunc, "W");
 
+
+    TFitResultPtr fitResult = histogram->Fit(fitFunc, "S");
+
     double fittedAmplitude = fitFunc->GetParameter(0);
     double fittedMean = fitFunc->GetParameter(1);
     double fittedStdDev = fitFunc->GetParameter(2);
 
-
     cout << "Âmplitude: " << fittedAmplitude << endl;
     cout << "Média: " << fittedMean << endl;
     cout << "Desvio Padrão: " << fittedStdDev << endl;
+
 
     // Nº de contagens Pico
     int N_count_pico = 0;
@@ -94,8 +97,9 @@ void pico_fit() {
         }
     }
 
-    double chi = fitFunc->GetChisquare();
-    double chi_ndf=chi/(max-min+1-3);
+    double chi = fitResult->Chi2();
+    int ndf = fitResult->Ndf();
+    double chi_ndf = chi/ndf;
     cout << "Nº de contagens do Pico: " << N_count_pico << endl;
     cout << "chi/ndf: " << chi_ndf << endl;
 
@@ -108,12 +112,12 @@ void pico_fit() {
 
     fitFunc->Draw("same");
 
-    C.SaveAs("FIT_PULSER2.png"); // -> MEXER AQUI
+    //C.SaveAs("FIT_PULSER5.png"); // -> MEXER AQUI
     C.Update();
-    C.WaitPrimitive();
+    C.WaitPrimitive();  
 
 
-    std::ofstream outputFile("Parâmetros_PiQUINHO.txt"); // -> MEXER AQUI
+    /*std::ofstream outputFile("Parâmetros_PiQUINHO.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }
@@ -123,7 +127,7 @@ void pico_fit() {
     outputFile << "Desvio Padrão: " << fittedStdDev << endl;
     outputFile << "Nº de contagens do Pico: " << N_count_pico << endl;
 
-    outputFile.close();
+    outputFile.close();*/
 
     std::cout << "File writing completed successfully." << std::endl;
 

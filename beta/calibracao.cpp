@@ -11,10 +11,10 @@ Double_t fitFunction(Double_t* x, Double_t* par) {
 void calibracao() {
     // Step 1: Set up your data points
     //Falta aqui um dos pontos, o de 80 keV
-    Double_t x[] = {113.02,243.51,44.18,446.99,328.01,658.48,547.90,875.50,175.57};
+    Double_t x[] = {113.52,243.99,44.83,439.24,328.50,659.01,548.38,876.01,173.08};
     Double_t y[] = {662,1400,255,2546,1910,3819,3183,5092,1018};
-    Double_t ex[] = {0.023,0.023,0.039,0.295,0.023,0.023,0.023,0.022,0.024};
-    Double_t ey[] = {25,40,18,62,49,86,74,111,32};
+    Double_t ex[] = {0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02};
+    Double_t ey[] = {0,30,14,51,39,75,63,99,23};
     Int_t nPoints = 9;
 
     // Step 2: Create a ROOT graph
@@ -31,16 +31,13 @@ void calibracao() {
     // Step 5: Perform the fit
     graph->Fit(fitFunc, "QSE");
 
-    // Step 6: Access the fit results
-    Double_t chi2 = fitFunc->GetChisquare();
-    double ndf = fitFunc->GetNDF();
-
     // Perform any additional analysis or output the results as needed
     // Save the graph as a PNG file
     TCanvas* canvas = new TCanvas("canvas");
     //Changing the apperance of error bars
     graph-> SetLineWidth(1);
     graph->SetLineColor(kBlue);
+    graph->GetYaxis()->SetRangeUser(0, 5800);
 
     //Changing the marker apperande
     
@@ -48,7 +45,7 @@ void calibracao() {
     graph->SetMarkerSize(0.2);
     //Changing the titles and drawing
 
-    graph -> SetTitle("Calibracao;Bins;Energy(MeV)"); //Title, X title, Y title
+    graph -> SetTitle("Calibracao;Bins;Energy(KeV)"); //Title, X title, Y title
     graph->Draw("AP");
     canvas->SaveAs("calibracao_am.png");
     
@@ -59,10 +56,12 @@ void calibracao() {
         std::cout << "Parameter " << i << ": " << parameterValue << " Error" << ": " <<  fitFunc->GetParError(i) <<  std::endl;
     }
 
-    // Display the chi-square value
-    std::cout <<   "Chi-square: " << chi2 << std::endl;
-    std::cout <<   "NDF: " << ndf << std::endl;
-    std::cout <<   "chi/NDF: " << chi2/ndf << std::endl;
+    TFitResultPtr fitResult = graph->Fit(fitFunc, "S");
+    double chi = fitResult->Chi2();
+    int ndf = fitResult->Ndf();
+    double chi_ndf = chi/ndf;
+    cout << "chi/ndf: " << chi_ndf << endl;
+
     
 }
 

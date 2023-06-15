@@ -1,6 +1,7 @@
-Âmplitude: 7515.6
-Média: 702.124
-Média em Energia: 1034.42
-Desvio Padrão: 1.85196
-Desvio Padrão em Energia: 2.76289
+Âmplitude: 7247.36
+Média: 702.038
+Média em Energia: 1034.29
+Desvio Padrão: 1.95253
+Desvio Padrão em Energia: 2.91292
 Nº de contagens do Pico: 35414
+Reduced Chi2: 112.79

@@ -8,7 +8,7 @@ void ver_bis() {
     std::vector<double> xData;
     std::vector<double> yData;
 
-    std::ifstream file("bis600s.txt");
+    std::ifstream file("bi600ac.txt");
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << "RUIDO.CESIO.txt" << std::endl;
         return;
@@ -40,8 +40,8 @@ void ver_bis() {
         
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 110;
-    double max = 130;
+    double min = 0;
+    double max = 250;
 
     histogram->GetXaxis()->SetRangeUser(min, max);
 
@@ -58,8 +58,9 @@ void ver_bis() {
     legend->AddEntry(histogram, "Histograma de contagens", "l");
     legend->Draw();
 
+    C.SetLogy();
 
-    C.SaveAs("VER_PIQUINHO_bis.png"); // -> MEXER AQUI
+    C.SaveAs("VER_PIQUINHO.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 

@@ -8,7 +8,7 @@ double predefinedGaussian(double *x, double *par) {
 }
 
 
-void cesio_fit() {
+void Fit_me() {
 
     //INICIALIZACOES
     TApplication App("A", nullptr, nullptr);
@@ -19,22 +19,27 @@ void cesio_fit() {
     std::vector<double> yData;
 
     //Leitura do Ficheiro
-    std::ifstream file("cesio_sem_ruido.txt");
+    std::ifstream file("aml65s4.txt"); // -> Mexer Aqui
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << std::endl;
     }
     
-    //Conversão Bin - Energia
+    //Leitura do Ficheiro
     std::string line;
     while (std::getline(file, line)) {
-        double bin, cont, energy;
+
+        double bin, cont, trash;
+        char comma;
+
         std::stringstream ss(line);
-        ss >> bin >> cont;
+        ss >> bin >> comma >> cont >> comma >> trash;
+
         xData.push_back(bin);
         if (cont < 0) {
             yData.push_back(0);
-        } else {
-            yData.push_back(cont);
+        }
+        else {
+        yData.push_back(cont);
         }
     }
    
@@ -48,22 +53,21 @@ void cesio_fit() {
     }
 
     //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Pico de Absorcao Total Cesio"); // -> MEXER AQUI
+    histogram->SetTitle("Pulser N "); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens"); 
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 420;
-    double max = 500;
+    double min = 699;
+    double max = 720;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
-
     // Definir os erros como Sqrt(N)
-    for (int i = min; i <= max; i++) 
+    for(int i = min; i <= max; i++)
         histogram->SetBinError(i,sqrt(yData[i]));
-        
+
     histogram->SetStats(0);
     histogram->Draw();
 
@@ -71,9 +75,9 @@ void cesio_fit() {
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 3);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude = 300;
-    double mean = 459;
-    double stddev = 30;
+    double amplitude = 7000;
+    double mean = 702.5;
+    double stddev = 2;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude, mean, stddev);
@@ -85,26 +89,15 @@ void cesio_fit() {
     double fittedMean = fitFunc->GetParameter(1);
     double fittedStdDev = fitFunc->GetParameter(2);
 
-    //Parâmetros da Calibração
-    double ordenada = 8.754;
-    double declive = 0.6703;
-
-    double fittedMeanEnergy = (fittedMean-ordenada)/declive;
-    double fittedStdDevEnergy = fittedStdDev/declive;
+    double fittedAmplitude_E = fitFunc->GetParError(0);
+    double fittedMean_E = fitFunc->GetParError(1);
+    double fittedStdDev_E = fitFunc->GetParError(2);
 
     cout << "Âmplitude: " << fittedAmplitude << endl;
     cout << "Média: " << fittedMean << endl;
-    cout << "Média em Energia: " << fittedMeanEnergy << endl;
     cout << "Desvio Padrão: " << fittedStdDev << endl;
-    cout << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
 
-    int N_count_pico = 0;
 
-    for (int i = min; i <= max; i++) {
-        if (fittedMean - 3*fittedStdDev <= xData[i] <= fittedMean + 3*fittedStdDev) {
-            N_count_pico += yData[i];
-        }
-    }
 
     cout << "Nº de contagens do Pico: " << N_count_pico << endl;
 
@@ -114,10 +107,6 @@ void cesio_fit() {
     // Create a TLegend object and set its position
     TLegend* legend = new TLegend(0.6, 0.7, 0.9, 0.9);
   
-    // Add the histogram and the fit function to the legend
-    //legend->AddEntry(histogram, "Data", "p");
-    //legend->AddEntry(fitFunc, "Fit", "l");
-  
     // Calculate the reduced chi-squared value
     double chi2_ = fitFunc->GetChisquare();
     int ndf_ = fitFunc->GetNDF();
@@ -125,9 +114,9 @@ void cesio_fit() {
   
     //Create a formatted string for the reduced chi-squared value
     TString chi2String = Form("#chi^{2}/ndf = %.2f/%d = %.2f", chi2_, ndf_, reducedChi2);
-    TString meanString = Form("Fitted Mean: %.2f", fittedMean);
-    TString StdevString = Form("Fitted StdDev: %.2f", fittedStdDev);
-    TString ampString = Form("Fitted Amplitude: %.2f", fittedAmplitude);
+    TString meanString = Form("Fitted Mean: %.2f #pm %.2f", fittedMean, fittedMean_E);
+    TString StdevString = Form("Fitted StdDev: %.2f #pm %.2f", fittedStdDev, fittedStdDev_E);
+    TString ampString = Form("Fitted Amplitude: %.2f #pm %.2f", fittedAmplitude, fittedAmplitude_E);
   
     // Add the reduced chi-squared value to the legend
     legend->AddEntry((TObject*)0, chi2String, "");
@@ -138,12 +127,12 @@ void cesio_fit() {
     // Draw the legend
     legend->Draw();
 
-    C.SaveAs("FIT_PICO_AB_TOTAL_CESIO.png"); // -> MEXER AQUI
+    C.SaveAs("FIT_Pico_Calibração_Amerício.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_Pico_Absorção_Total_Césio.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_Pico_Calibração_Amerício.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }
@@ -155,14 +144,16 @@ void cesio_fit() {
     outputFile << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
     outputFile << "Nº de contagens do Pico: " << N_count_pico << endl;
 
-    outputFile.close();
-
-    std::cout << "File writing completed successfully." << std::endl;
-
     int ndf = fitResult->Ndf();
     double chi2 = fitResult->Chi2();
 
     std::cout << "Reduced Chi2: " << chi2/ndf << std::endl;
+    outputFile << "Reduced Chi2: " << chi2/ndf << std::endl;
+
+    outputFile.close();
+
+    std::cout << "File writing completed successfully." << std::endl;
+
   
 }
 

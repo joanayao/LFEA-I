@@ -1,0 +1,6 @@
+Âmplitude 1: 82.7599 +- 3.05269
+Média 1: 639.922 +- 0.446637
+Média em Energia 1: 5.39299
+Desvio Padrão 1: 9.52274 +- 0.504679
+Desvio Padrão em Energia 1: 0.0250448
+Chi^2/ndf: 3.34342

@@ -68,6 +68,7 @@ void Fit_me() {
     for(int i = min; i <= max; i++)
         histogram->SetBinError(i,sqrt(yData[i]));
 
+    histogram->SetStats(0);
     histogram->Draw();
 
     // Criamos uma instância "fitadora"
@@ -75,18 +76,22 @@ void Fit_me() {
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
     double amplitude = 7000;
-    double mean = 700;
+    double mean = 702.5;
     double stddev = 2;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude, mean, stddev);
 
     // Fit em que se ignoram os bins sem nada
-    histogram->Fit(fitFunc, "WE");
+    TFitResultPtr fitResult = histogram->Fit(fitFunc, "S");
 
     double fittedAmplitude = fitFunc->GetParameter(0);
     double fittedMean = fitFunc->GetParameter(1);
     double fittedStdDev = fitFunc->GetParameter(2);
+
+    double fittedAmplitude_E = fitFunc->GetParError(0);
+    double fittedMean_E = fitFunc->GetParError(1);
+    double fittedStdDev_E = fitFunc->GetParError(2);
 
     //Parâmetros da Calibração
     double ordenada = 8.754;
@@ -113,6 +118,30 @@ void Fit_me() {
 
 
     fitFunc->Draw("same");
+
+    // Create a TLegend object and set its position
+    TLegend* legend = new TLegend(0.6, 0.7, 0.9, 0.9);
+  
+    // Calculate the reduced chi-squared value
+    double chi2_ = fitFunc->GetChisquare();
+    int ndf_ = fitFunc->GetNDF();
+    double reducedChi2 = chi2_ / ndf_;
+  
+    //Create a formatted string for the reduced chi-squared value
+    TString chi2String = Form("#chi^{2}/ndf = %.2f/%d = %.2f", chi2_, ndf_, reducedChi2);
+    TString meanString = Form("Fitted Mean: %.2f #pm %.2f", fittedMean, fittedMean_E);
+    TString StdevString = Form("Fitted StdDev: %.2f #pm %.2f", fittedStdDev, fittedStdDev_E);
+    TString ampString = Form("Fitted Amplitude: %.2f #pm %.2f", fittedAmplitude, fittedAmplitude_E);
+  
+    // Add the reduced chi-squared value to the legend
+    legend->AddEntry((TObject*)0, chi2String, "");
+    legend->AddEntry((TObject*)0, meanString, "");
+    legend->AddEntry((TObject*)0, StdevString, "");
+    legend->AddEntry((TObject*)0, ampString, "");
+  
+    // Draw the legend
+    legend->Draw();
+
     C.SaveAs("FIT_Pico_Calibração_Amerício.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
@@ -129,6 +158,12 @@ void Fit_me() {
     outputFile << "Desvio Padrão: " << fittedStdDev << endl;
     outputFile << "Desvio Padrão em Energia: " << fittedStdDevEnergy << endl;
     outputFile << "Nº de contagens do Pico: " << N_count_pico << endl;
+
+    int ndf = fitResult->Ndf();
+    double chi2 = fitResult->Chi2();
+
+    std::cout << "Reduced Chi2: " << chi2/ndf << std::endl;
+    outputFile << "Reduced Chi2: " << chi2/ndf << std::endl;
 
     outputFile.close();
 

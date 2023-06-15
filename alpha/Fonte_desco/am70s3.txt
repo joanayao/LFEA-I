@@ -1022,29 +1022,3 @@
 1021,        0, 008
 1022,        0, 008
 1023,        0, 008
-
- ROI:01  Beg: 0010 Chn                           End: 0053 Chn                 
-         Gross Integral:         10 cts        Net Integral:         10 cts
-
- ROI:02  Beg: 0086 Chn                           End: 0121 Chn                 
-         Gross Integral:          6 cts        Net Integral:        -12 cts
-
- ROI:03  Beg: 0199 Chn                           End: 0248 Chn                 
-         Gross Integral:         27 cts        Net Integral:         19 cts
-
- ROI:04  Beg: 0384 Chn                           End: 0455 Chn                 
-         Gross Integral:         79 cts        Net Integral:         19 cts
-
- ROI:05  Beg: 0483 Chn                           End: 0510 Chn                 
-         Gross Integral:         41 cts        Net Integral:          4 cts
-
- ROI:06  Beg: 0668 Chn                           End: 0688 Chn                 
-         Ctrd:     677.01 Chn                 
-         Fwhm:       8.51 Chn                 
-         Gross Integral:      36028 cts        Net Integral:      26466 cts
-
- ROI:07  Beg: 0756 Chn                           End: 0800 Chn                 
-         Gross Integral:          0 cts        Net Integral:          0 cts
-
- ROI:08  Beg: 0993 Chn                           End: 1023 Chn                 
-         Gross Integral:          0 cts        Net Integral:          0 cts

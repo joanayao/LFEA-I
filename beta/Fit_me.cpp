@@ -27,7 +27,7 @@ void Fit_me() {
     std::vector<double> yData;
 
     //Leitura do Ficheiro
-    std::ifstream file("am70s3.txt"); // -> Mexer Aqui
+    std::ifstream file("CS120GA.txt"); // -> Mexer Aqui
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << std::endl;
     }
@@ -61,19 +61,19 @@ void Fit_me() {
     }
 
     //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Fonte Semi-Desconhecida - Fit 1 Gaussiana"); // -> MEXER AQUI
+    histogram->SetTitle("Radiacao Gamma - 120 s"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens"); 
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 620;
-    double max = 650;
+    double min = 0;
+    double max = 300;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
     // Definir os erros como Sqrt(N)
-    for(int i = min; i <= max+1; i++)
+    for(int i = min; i <= max; i++)
         histogram->SetBinError(i,sqrt(yData[i]));
 
 
@@ -81,7 +81,7 @@ void Fit_me() {
     histogram->Draw();
 
     // Criamos uma instância "fitadora"
-    TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 9);
+    /*TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 9);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
     double amplitude_1 = 130;
@@ -116,7 +116,7 @@ void Fit_me() {
     double fittedMean_3 = fitFunc->GetParameter(7);
     double fittedStdDev_3 = fitFunc->GetParameter(8);*/
 
-    double fittedAmplitude_1_E = fitFunc->GetParError(0);
+    /*double fittedAmplitude_1_E = fitFunc->GetParError(0);
     double fittedMean_1_E = fitFunc->GetParError(1);
     double fittedStdDev_1_E = fitFunc->GetParError(2);
     /*double fittedAmplitude_2_E = fitFunc->GetParError(3);
@@ -127,7 +127,7 @@ void Fit_me() {
     double fittedStdDev_3_E = fitFunc->GetParError(8);*/
 
     //Parâmetros da Calibração
-    double ordenada = 3.71;
+    /*double ordenada = 3.71;
     double declive = 0.00263;
 
     double fittedMeanEnergy_1 = fittedMean_1*declive+ordenada;
@@ -137,7 +137,7 @@ void Fit_me() {
     /*double fittedMeanEnergy_3 = fittedMean_3*declive+ordenada;
     double fittedStdDevEnergy_3 = fittedStdDev_3*declive;*/
 
-    cout << "Âmplitude 1: " << fittedAmplitude_1 << " +- " << fittedAmplitude_1_E << endl;
+    /*cout << "Âmplitude 1: " << fittedAmplitude_1 << " +- " << fittedAmplitude_1_E << endl;
     cout << "Média 1: " << fittedMean_1 << " +- " << fittedMean_1_E << endl;
     cout << "Média em Energia 1: " << fittedMeanEnergy_1 << endl;
     cout << "Desvio Padrão 1: " << fittedStdDev_1 << " +- " << fittedStdDev_1_E << endl;
@@ -153,7 +153,7 @@ void Fit_me() {
     cout << "Desvio Padrão 3: " << fittedStdDev_3 << " +- " << fittedStdDev_3_E << endl;
     cout << "Desvio Padrão em Energia 3: " << fittedStdDevEnergy_3 << endl;*/
 
-    fitFunc->Draw("same");
+    /*fitFunc->Draw("same");
 
     TLegend* legend = new TLegend(0.15, 0.6, 0.35, 0.9);
   
@@ -175,7 +175,7 @@ void Fit_me() {
     TString amp3String = Form("Fitted Amplitude 3: %.2f #pm %.2f", fittedAmplitude_3, fittedAmplitude_3_E);*/
   
     // Add the reduced chi-squared value to the legend
-    legend->AddEntry((TObject*)0, chi2String, "");
+    /*legend->AddEntry((TObject*)0, chi2String, "");
     legend->AddEntry((TObject*)0, mean1String, "");
     legend->AddEntry((TObject*)0, Stdev1String, "");
     legend->AddEntry((TObject*)0, amp1String, "");
@@ -187,19 +187,19 @@ void Fit_me() {
     legend->AddEntry((TObject*)0, amp3String, "");*/
   
     // Draw the legend
-    legend->Draw();
+    /*legend->Draw();*/
 
-    C.SaveAs("FIT_1_Picos_Fonte_Desco.png"); // -> MEXER AQUI
+    C.SaveAs("Eficiência_gamma.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_1_Picos_Fonte_Desco.txt"); // -> MEXER AQUI
+    /*std::ofstream outputFile("Parâmetros_1_Picos_Fonte_Desco.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }
 
-    outputFile << "Âmplitude 1: " << fittedAmplitude_1 << " +- " << fittedAmplitude_1_E << endl;
+    /*outputFile << "Âmplitude 1: " << fittedAmplitude_1 << " +- " << fittedAmplitude_1_E << endl;
     outputFile << "Média 1: " << fittedMean_1 << " +- " << fittedMean_1_E << endl;
     outputFile << "Média em Energia 1: " << fittedMeanEnergy_1 << endl;
     outputFile << "Desvio Padrão 1: " << fittedStdDev_1 << " +- " << fittedStdDev_1_E << endl;
@@ -217,13 +217,13 @@ void Fit_me() {
     outputFile << "Desvio Padrão 3: " << fittedStdDev_3 << " +- " << fittedStdDev_3_E << endl;
     outputFile << "Desvio Padrão em Energia 3: " << fittedStdDevEnergy_3 << endl;*/
 
-    double chi2 = fitFunc->GetChisquare();
+    /*double chi2 = fitFunc->GetChisquare();
     int ndf = fitFunc->GetNDF();
     outputFile << "Chi^2/ndf: " << chi2/ndf << endl;
 
     outputFile.close();
 
-    std::cout << "File writing completed successfully." << std::endl;
+    std::cout << "File writing completed successfully." << std::endl;*/
 
   
 }

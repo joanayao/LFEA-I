@@ -27,7 +27,7 @@ void Fit_me_2() {
     std::vector<double> yData;
 
     //Leitura do Ficheiro
-    std::ifstream file("amar60s.txt"); // -> Mexer Aqui
+    std::ifstream file("amvac60s.txt"); // -> Mexer Aqui
     if (!file.is_open()) {
         std::cerr << "Error opening file: " << std::endl;
     }
@@ -61,15 +61,15 @@ void Fit_me_2() {
     }
 
     //histogram->SetBinErrorOption(TH1::kNormal);
-    histogram->SetTitle("Americio + Ar - Fit 3 Gaussianas"); // -> MEXER AQUI
+    histogram->SetTitle("Americio + Vacuo - Fit 3 Gaussianas"); // -> MEXER AQUI
     histogram->SetMarkerColor(kBlue-2);
     histogram->SetMarkerStyle(20);
     histogram->GetXaxis()->SetTitle("Bin");
     histogram->GetYaxis()->SetTitle("N de Contagens"); 
 
     //BINS DO PICO -> MEXER AQUI
-    double min = 530;
-    double max = 630;
+    double min = 680;
+    double max = 720;
     histogram->GetXaxis()->SetRangeUser(min, max);
 
     // Definir os erros como Sqrt(N)
@@ -83,15 +83,15 @@ void Fit_me_2() {
     TF1 *fitFunc = new TF1("fitFunc", predefinedGaussian, min, max, 9);
 
     // Parâmetros Iniciais Estimados -> MEXER AQUI
-    double amplitude_1 = 850;
-    double mean_1 = 592;
-    double stddev_1 = 6.7;
-    double amplitude_2 = 646;
-    double mean_2 = 584;
-    double stddev_2 = 9.8;
-    double amplitude_3 = 109;
-    double mean_3 = 574;
-    double stddev_3 = 14;
+    double amplitude_1 = 6110;
+    double mean_1 = 702;
+    double stddev_1 = 1.37;
+    double amplitude_2 = 1953;
+    double mean_2 = 699;
+    double stddev_2 = 3.88;
+    double amplitude_3 = 161;
+    double mean_3 = 687;
+    double stddev_3 = 2.24;
 
     // Vai dar os parâmtros à nossa função de fit
     fitFunc->SetParameters(amplitude_1, mean_1, stddev_1, amplitude_2, mean_2, stddev_2, amplitude_3, mean_3, stddev_3);
@@ -99,11 +99,8 @@ void Fit_me_2() {
     //fitFunc->FixParameter(5, 7);
     //fitFunc->FixParameter(7, 574);
 
-
-
-
     // Fit
-    histogram->Fit(fitFunc, "WE");
+    TFitResultPtr fitResult = histogram->Fit(fitFunc, "S");
 
     double fittedAmplitude_1 = fitFunc->GetParameter(0);
     double fittedMean_1 = fitFunc->GetParameter(1);
@@ -181,12 +178,48 @@ void Fit_me_2() {
 
 
     fitFunc->Draw("same");
-    C.SaveAs("FIT_3_Picos_Am_Ar.png"); // -> MEXER AQUI
+
+    TLegend* legend = new TLegend(0.7, 0.5, 0.9, 0.9);
+  
+    // Calculate the reduced chi-squared value
+    double chi2_ = fitFunc->GetChisquare();
+    int ndf_ = fitFunc->GetNDF();
+    double reducedChi2 = chi2_ / ndf_;
+  
+    //Create a formatted string for the reduced chi-squared value
+    TString chi2String = Form("#chi^{2}/ndf = %.2f/%d = %.2f", chi2_, ndf_, reducedChi2);
+    TString mean1String = Form("Fitted Mean 1: %.2f #pm %.2f", fittedMean_1, fittedMean_1_E);
+    TString Stdev1String = Form("Fitted StdDev 1: %.2f #pm %.2f", fittedStdDev_1, fittedStdDev_1_E);
+    TString amp1String = Form("Fitted Amplitude 1: %.2f #pm %.2f", fittedAmplitude_1, fittedAmplitude_1_E);
+    TString mean2String = Form("Fitted Mean 2: %.2f #pm %.2f", fittedMean_2, fittedMean_2_E);
+    TString Stdev2String = Form("Fitted StdDev 2: %.2f #pm %.2f", fittedStdDev_2, fittedStdDev_2_E);
+    TString amp2String = Form("Fitted Amplitude 2: %.2f #pm %.2f", fittedAmplitude_2, fittedAmplitude_2_E);
+    TString mean3String = Form("Fitted Mean 3: %.2f #pm %.2f", fittedMean_3, fittedMean_3_E);
+    TString Stdev3String = Form("Fitted StdDev 3: %.2f #pm %.2f", fittedStdDev_3, fittedStdDev_3_E);
+    TString amp3String = Form("Fitted Amplitude 3: %.2f #pm %.2f", fittedAmplitude_3, fittedAmplitude_3_E);
+  
+    // Add the reduced chi-squared value to the legend
+    legend->AddEntry((TObject*)0, chi2String, "");
+    legend->AddEntry((TObject*)0, mean1String, "");
+    legend->AddEntry((TObject*)0, Stdev1String, "");
+    legend->AddEntry((TObject*)0, amp1String, "");
+    legend->AddEntry((TObject*)0, mean2String, "");
+    legend->AddEntry((TObject*)0, Stdev2String, "");
+    legend->AddEntry((TObject*)0, amp2String, "");
+    legend->AddEntry((TObject*)0, mean3String, "");
+    legend->AddEntry((TObject*)0, Stdev3String, "");
+    legend->AddEntry((TObject*)0, amp3String, "");
+  
+    // Draw the legend
+    legend->Draw();
+
+
+    C.SaveAs("FIT_3_Picos_Am_Vac.png"); // -> MEXER AQUI
     C.Update();
     C.WaitPrimitive();
 
 
-    std::ofstream outputFile("Parâmetros_3_Picos_Am_Ar.txt"); // -> MEXER AQUI
+    std::ofstream outputFile("Parâmetros_3_Picos_Am_Vac.txt"); // -> MEXER AQUI
     if (!outputFile) {
         std::cout << "Failed to open the output file." << std::endl;
     }

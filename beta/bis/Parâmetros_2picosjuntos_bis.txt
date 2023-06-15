@@ -1,0 +1,9 @@
+Âmplitude 1: 185.865 +- 19.4673
+Média 1: 120.175 +- 0.0928243
+Desvio Padrão 1: 0.612311 +- 0.0879623
+Nº de contagens do Pico 1: 340
+Âmplitude 2: 168.621 +- 11.5612
+Média 2: 121.348 +- 0.413738
+Desvio Padrão 2: 4.3337 +- 0.640566
+Nº de contagens do Pico 2: 1460
+Chi^2/ndf: inf
